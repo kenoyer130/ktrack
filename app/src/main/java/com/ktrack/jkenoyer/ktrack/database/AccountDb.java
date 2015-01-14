@@ -1,7 +1,11 @@
 package com.ktrack.jkenoyer.ktrack.database;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.ktrack.jkenoyer.ktrack.model.Account;
+import com.ktrack.jkenoyer.ktrack.model.AccountBean;
 import com.ktrack.jkenoyer.ktrack.model.FamilyRole;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -29,11 +33,9 @@ public class AccountDb {
 
     public Account Login(String userName, String password) {
 
-        password = new Password().hash(password);
-
         DBCollection accounts = this.db.getCollection("Accounts");
 
-        BasicDBObject query = new BasicDBObject("Account.name", userName).append("Account.password", password);
+        BasicDBObject query = new BasicDBObject("Account.name", userName);
 
         DBCursor cursor = accounts.find(query);
 
@@ -41,7 +43,21 @@ public class AccountDb {
 
         try {
             while (cursor.hasNext()) {
-                System.out.println(cursor.next());
+                Gson gson = new Gson();
+
+                String json = cursor.next().toString();
+
+                JsonObject obj = gson.fromJson(json, JsonObject.class);
+
+                JsonElement element = obj.get("Account");
+
+                Account bean = gson.fromJson(element.toString(), Account.class);
+
+                String passwordCheck = new Password().decrypt(bean.getPassword());
+
+                if(password.equals(passwordCheck)) {
+                    account = bean;
+                }
             }
         } finally {
             cursor.close();
@@ -58,7 +74,7 @@ public class AccountDb {
 
     public CreateAccountResult CreateAccount(String userName, String familyName, String password) {
 
-        password = new Password().hash(password);
+        password = new Password().encrypt(password);
 
         //todo: might be able to do in one or query
         if(accountExists(userName)) {
@@ -79,7 +95,7 @@ public class AccountDb {
         account.setFamily(familyName);
         account.setPassword(password);
         account.setName(userName);
-        account.setFamilyRole(FamilyRole.Parent);
+        account.setFamilyRole(FamilyRole.Parent.toString());
 
         saveAccount(account);
 

@@ -32,11 +32,11 @@ public class Account implements Serializable {
         this.amount = amount;
     }
 
-    public FamilyRole getFamilyRole() {
+    public String getFamilyRole() {
         return familyRole;
     }
 
-    public void setFamilyRole(FamilyRole familyRole) {
+    public void setFamilyRole(String familyRole) {
         this.familyRole = familyRole;
     }
 
@@ -52,7 +52,7 @@ public class Account implements Serializable {
 
     private String password;
 
-    private FamilyRole familyRole;
+    private String familyRole;
 
     private String family;
 

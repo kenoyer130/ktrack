@@ -12,11 +12,29 @@ import java.security.GeneralSecurityException;
  */
 public class Password {
 
-    public String hash(String password) {
+    public String encrypt(String password) {
+
         try {
             AesCbcWithIntegrity.SecretKeys key = AesCbcWithIntegrity.keys(Ctx.getText(R.string.key));
 
             return AesCbcWithIntegrity.encrypt(password, key).toString();
+
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String decrypt(String password) {
+        try {
+            AesCbcWithIntegrity.SecretKeys key = AesCbcWithIntegrity.keys(Ctx.getText(R.string.key));
+
+            AesCbcWithIntegrity.CipherTextIvMac cipherTextIvMac = new AesCbcWithIntegrity.CipherTextIvMac(password);
+
+            return AesCbcWithIntegrity.decryptString(cipherTextIvMac, key).toString();
 
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
