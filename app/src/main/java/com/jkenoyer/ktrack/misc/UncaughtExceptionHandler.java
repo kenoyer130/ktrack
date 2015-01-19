@@ -1,4 +1,4 @@
-package com.ktrack.jkenoyer.ktrack.misc;
+package com.jkenoyer.ktrack.misc;
 
 import android.content.Context;
 

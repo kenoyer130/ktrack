@@ -1,17 +1,13 @@
-package com.ktrack.jkenoyer.ktrack.database;
+package com.jkenoyer.ktrack.database;
 
-import com.ktrack.jkenoyer.ktrack.R;
+import com.jkenoyer.ktrack.Properties;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.Properties;
 
 /**
  * Created by jkenoyer on 1/11/15.
@@ -31,14 +27,19 @@ public class Db {
 
     private void initDb() {
 
-        MongoCredential credential = MongoCredential.createMongoCRCredential(Ctx.getText(R.string.dbUser), "ktracker", Ctx.getText(R.string.dbPassword).toCharArray());
+        MongoCredential credential = MongoCredential
+                .createMongoCRCredential(Properties.dbUser,
+                        "ktracker",
+                         Properties.dbPassword.toCharArray());
+
         MongoClient mongoClient = null;
         try {
-            mongoClient = new MongoClient(new ServerAddress(Ctx.getText(R.string.dbServer), Integer.parseInt(Ctx.getText(R.string.dbPort))), Arrays.asList(credential));
+            mongoClient = new MongoClient(new ServerAddress(Properties.dbServer, Properties.dbPort),
+                    Arrays.asList(credential));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
         db = mongoClient.getDB("ktracker");
     }
-
 }

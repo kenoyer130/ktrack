@@ -1,8 +1,10 @@
-package com.ktrack.jkenoyer.ktrack;
+package com.jkenoyer.ktrack;
 
-import com.ktrack.jkenoyer.ktrack.database.Ctx;
-import com.ktrack.jkenoyer.ktrack.misc.UncaughtExceptionHandler;
-import com.ktrack.jkenoyer.ktrack.model.Account;
+import com.jkenoyer.ktrack.commands.ValidateLoginCommand;
+import com.jkenoyer.ktrack.commands.ValidationResult;
+import com.jkenoyer.ktrack.commands.AccountLoginCommand;
+import com.jkenoyer.ktrack.misc.UncaughtExceptionHandler;
+import com.jkenoyer.ktrack.model.Account;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -13,12 +15,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ktrack.jkenoyer.ktrack.database.AccountDb;
-
-
 public class MainActivity extends ActionBarActivity {
 
-    private TextView txtUserName;
+    private TextView txtEmailLogin;
     private TextView txtPassword;
     private TextView txtLoginError;
     private Button btnLogin;
@@ -31,9 +30,7 @@ public class MainActivity extends ActionBarActivity {
 
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
 
-        Ctx.setContext(this);
-
-        txtUserName = (TextView) findViewById(R.id.txtCreateUserName);
+        txtEmailLogin= (TextView) findViewById(R.id.txtEmailLogin);
         txtPassword = (TextView) findViewById(R.id.txtCreatePassword);
         txtLoginError = (TextView) findViewById(R.id.txtLoginError);
         btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -43,8 +40,7 @@ public class MainActivity extends ActionBarActivity {
                 public void onClick(View v) {
                     login();
                 }
-            }
-        );
+            });
 
         btnNewAccount = (Button) findViewById(R.id.btnNewAccount);
 
@@ -63,19 +59,40 @@ public class MainActivity extends ActionBarActivity {
 
     private void login() {
 
+        txtLoginError.setText("");
+
+        validate();
+
         btnLogin.setEnabled(false);
 
         new Thread() {
             @Override
             public void run() {
-                AccountDb db = new AccountDb();
-                Account success = db.Login(txtUserName.getText().toString(), txtPassword.getText().toString());
+
+                AccountLoginCommand cmd = new AccountLoginCommand();
+                Account success = cmd.Login(txtEmailLogin.getText().toString(), txtPassword.getText().toString());
 
                 if(success == null) {
                     loginFailed();
               }
             }
         }.start();
+    }
+
+    private boolean validate() {
+
+        txtLoginError.setText("");
+
+        ValidationResult validationResult = new ValidateLoginCommand()
+                .validate(txtEmailLogin.getText().toString(), txtPassword.getText().toString());
+
+        if (validationResult != null) {
+            for(String result: validationResult.getResults()) {
+                txtLoginError.setText(txtLoginError.getText().toString() + "\n" + result);
+            }
+        }
+
+        return validationResult.isSuccess();
     }
 
     private void loginFailed() {

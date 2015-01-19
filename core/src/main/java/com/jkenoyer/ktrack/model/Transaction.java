@@ -1,4 +1,4 @@
-package com.ktrack.jkenoyer.ktrack.model;
+package com.jkenoyer.ktrack.model;
 
 import java.util.Date;
 

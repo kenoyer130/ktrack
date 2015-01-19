@@ -1,4 +1,4 @@
-package com.ktrack.jkenoyer.ktrack.model;
+package com.jkenoyer.ktrack.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,6 +7,20 @@ import java.util.ArrayList;
  * Created by jkenoyer on 1/11/15.
  */
 public class Account implements Serializable {
+
+    private String email;
+
+    private String familyEmail;
+
+    private String name;
+
+    private String password;
+
+    private String familyRole;
+
+    private String family;
+
+    private int amount;
 
     public String getName() {
         return name;
@@ -48,14 +62,19 @@ public class Account implements Serializable {
         this.family = family;
     }
 
-    private String name;
+    public String getEmail() {
+        return email;
+    }
 
-    private String password;
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    private String familyRole;
+    public String getFamilyEmail() {
+        return familyEmail;
+    }
 
-    private String family;
-
-    private int amount;
-
+    public void setFamilyEmail(String familyEmail) {
+        this.familyEmail = familyEmail;
+    }
 }

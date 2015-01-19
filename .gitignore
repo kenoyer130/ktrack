@@ -5,4 +5,5 @@
 .DS_Store
 /build
 .idea
-app/src/main/res/values/settings.xml
+core/src/main/java/com/jkenoyer/ktrack/Properties.java
+
