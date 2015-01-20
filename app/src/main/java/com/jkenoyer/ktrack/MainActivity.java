@@ -5,6 +5,7 @@ import com.jkenoyer.ktrack.commands.ValidationResult;
 import com.jkenoyer.ktrack.commands.AccountLoginCommand;
 import com.jkenoyer.ktrack.misc.UncaughtExceptionHandler;
 import com.jkenoyer.ktrack.model.Account;
+import com.jkenoyer.ktrack.model.CurrentAccount;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -74,9 +75,21 @@ public class MainActivity extends ActionBarActivity {
 
                 if(success == null) {
                     loginFailed();
-              }
+                    return;
+                }
+
+                CurrentAccount.setAccount(success);
+
+                navigateToHome();
+
+
             }
         }.start();
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
     }
 
     private boolean validate() {

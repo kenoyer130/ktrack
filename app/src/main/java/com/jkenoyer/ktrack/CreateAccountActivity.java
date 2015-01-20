@@ -1,5 +1,6 @@
 package com.jkenoyer.ktrack;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.jkenoyer.ktrack.commands.AccountCreationCommand;
 import com.jkenoyer.ktrack.commands.CreateAccountResult;
 import com.jkenoyer.ktrack.model.Account;
+import com.jkenoyer.ktrack.model.CurrentAccount;
 import com.jkenoyer.ktrack.model.FamilyRole;
 
 public class CreateAccountActivity extends ActionBarActivity {
@@ -26,6 +28,7 @@ public class CreateAccountActivity extends ActionBarActivity {
     private EditText txtFamily;
     private EditText txtCreateEmailLogin;
     private EditText txtCreateVerifyEmailLogin;
+    private FamilyRole role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,32 @@ public class CreateAccountActivity extends ActionBarActivity {
                 createAccount();
             }
         });
+
+        setFamilyRole();
+
+        setFamily();
+    }
+
+    private void setFamily() {
+        if(CurrentAccount.getAccount() != null) {
+           txtFamily.setText(CurrentAccount.getAccount().getFamily());
+           txtFamily.setEnabled(false);
+        }
+    }
+
+    private void setFamilyRole() {
+        Intent intent = getIntent();
+
+        if(intent.getExtras() == null) {
+            role = FamilyRole.Parent;
+            return;
+        }
+
+        role = (FamilyRole) intent.getExtras().get("role");
+
+        if(role == null) {
+            role = FamilyRole.Parent;
+        }
     }
 
     private void createAccount() {
@@ -68,7 +97,7 @@ public class CreateAccountActivity extends ActionBarActivity {
                 account.setName(txtCreateUserName.getText().toString());
                 account.setPassword(txtCreatePassword.getText().toString());
                 account.setFamily(txtFamily.getText().toString());
-                account.setFamilyRole(FamilyRole.Parent.toString());
+                account.setFamilyRole(role.toString());
 
                 CreateAccountResult result = new AccountCreationCommand().Create(account);
 
@@ -85,8 +114,18 @@ public class CreateAccountActivity extends ActionBarActivity {
 
                     return;
                 }
+
+                CurrentAccount.setAccount(account);
+
+                navigateToHome();
+
             }
         }.start();
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
     }
 
     private boolean validate() {
