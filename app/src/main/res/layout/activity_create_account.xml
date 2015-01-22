@@ -40,7 +40,25 @@
             android:id="@+id/txtFamily"
             android:hint="Family Name"
       />
+        <RadioGroup
+            android:id="@+id/radioRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
+            <RadioButton
+                android:id="@+id/radioParent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Parent"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/radioChild"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Child" />
+
+        </RadioGroup>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

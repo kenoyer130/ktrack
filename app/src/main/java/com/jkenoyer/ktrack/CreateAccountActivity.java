@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.jkenoyer.ktrack.commands.AccountCreationCommand;
@@ -29,6 +30,8 @@ public class CreateAccountActivity extends ActionBarActivity {
     private EditText txtCreateEmailLogin;
     private EditText txtCreateVerifyEmailLogin;
     private FamilyRole role;
+    private RadioButton radioChild;
+    private RadioButton radioParent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class CreateAccountActivity extends ActionBarActivity {
         txtCreateConfirm = (EditText) findViewById(R.id.txtCreateConfirm);
         txtCreateError = (TextView) findViewById(R.id.txtCreateError);
         btnNewAccount = (Button) findViewById(R.id.btnCreateAccount);
+
+        radioParent = (RadioButton) findViewById(R.id.radioParent);
+        radioChild = (RadioButton) findViewById(R.id.radioChild);
 
         btnNewAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +72,15 @@ public class CreateAccountActivity extends ActionBarActivity {
     private void setFamilyRole() {
         Intent intent = getIntent();
 
+        radioParent.setChecked(true);
+
+        radioParent.setEnabled(true);
+        radioChild.setEnabled(true);
+
         if(intent.getExtras() == null) {
             role = FamilyRole.Parent;
+            radioParent.setEnabled(false);
+            radioChild.setEnabled(false);
             return;
         }
 
@@ -75,6 +88,10 @@ public class CreateAccountActivity extends ActionBarActivity {
 
         if(role == null) {
             role = FamilyRole.Parent;
+        }
+
+        if(role == FamilyRole.Child) {
+            radioChild.setChecked(true);
         }
     }
 
