@@ -21,23 +21,10 @@ import java.util.List;
  */
 public class GetAccountFamilyCommand {
 
-    public void get(String family, Callback<List<Account>> callback) {
-
-        final List<Account> familyMembers = new ArrayList<Account>();
+    public List<Account> get(String family) {
 
         BasicDBObject query = new BasicDBObject("Account.family", family);
 
-        AccountReader reader = new AccountReader();
-
-        reader.read(query, new AccountReader.ReadCallback() {
-
-            @Override
-            public void onRead(Account account) {
-                familyMembers.add(account);
-            }
-        });
-
-        callback.onResult(familyMembers);
+        return new AccountReader().read(query);
     }
-
 }

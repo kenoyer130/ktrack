@@ -9,25 +9,27 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jkenoyer on 1/21/15.
  */
 public class AccountReader {
     private final DB db;
 
-    public interface ReadCallback {
-        public void onRead(Account account);
-    }
-
     public AccountReader() {
         this.db = new Db().get();
     }
 
-    public void read(BasicDBObject query, ReadCallback callback) {
+    public List<Account> read(BasicDBObject query) {
 
-        DBCollection accounts = this.db.getCollection("Accounts");
+        List<Account> results = new ArrayList<Account>();
 
-        DBCursor cursor = accounts.find(query);
+        DBCollection collection = this.db.getCollection("Accounts");
+
+        DBCursor cursor = collection.find(query);
 
         try {
             while (cursor.hasNext()) {
@@ -41,10 +43,12 @@ public class AccountReader {
 
                 Account bean = gson.fromJson(element.toString(), Account.class);
 
-                callback.onRead(bean);
+                results.add(bean);
             }
         } finally {
             cursor.close();
         }
+
+        return results;
     }
 }

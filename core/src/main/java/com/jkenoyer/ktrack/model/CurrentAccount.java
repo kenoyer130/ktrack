@@ -18,8 +18,8 @@ public class CurrentAccount {
         account = a;
     }
 
-    public static void setFamilyMembers(List<Account> familyMembers) {
-        familyMembers = familyMembers;
+    public static void setFamilyMembers(List<Account> fm) {
+        familyMembers = fm;
     }
 
     public static List<Account> getFamilyMembers() {
@@ -31,7 +31,7 @@ public class CurrentAccount {
         List<Account> kids = new ArrayList<Account>();
 
         for(Account account : familyMembers) {
-            if(account.getFamilyRole() == FamilyRole.Child.toString()) {
+            if(account.getFamilyRole().equals(FamilyRole.Child.toString())) {
                 kids.add(account);
             }
         }

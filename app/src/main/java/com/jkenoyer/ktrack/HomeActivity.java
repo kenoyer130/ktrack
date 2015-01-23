@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,22 +36,8 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void setKidSelector() {
-        for(final Account kid : CurrentAccount.getKids()) {
-            Button btn = new Button(getApplicationContext());
-
-            NumberFormat currencyFormatter =
-                    NumberFormat.getCurrencyInstance(Locale.ENGLISH);
-
-            btn.setText(kid.getName() + " $" + currencyFormatter.format(kid.getAmount()));
-
-            lstKids.addView(btn);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewKid(kid);
-                }
-            });
-        }
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.activity_home, CurrentAccount.getKids());
+        lstKids.setAdapter(adapter);
     }
 
     private void viewKid(Account kid) {

@@ -5,10 +5,13 @@ import com.jkenoyer.ktrack.commands.ValidateLoginCommand;
 import com.jkenoyer.ktrack.commands.ValidationResult;
 import com.jkenoyer.ktrack.commands.AccountLoginCommand;
 import com.jkenoyer.ktrack.database.Callback;
+import com.jkenoyer.ktrack.misc.CreditialStore;
 import com.jkenoyer.ktrack.misc.UncaughtExceptionHandler;
 import com.jkenoyer.ktrack.model.Account;
 import com.jkenoyer.ktrack.model.CurrentAccount;
+import com.mongodb.Bytes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -18,6 +21,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
@@ -55,6 +64,27 @@ public class MainActivity extends ActionBarActivity {
                 navigateToCreateAccount();
             }
         });
+
+        setCreditials();
+    }
+
+    private void setCreditials() {
+        CreditialStore store = new CreditialStore(getApplicationContext());
+        if(!store.Exists()) {
+            return;
+        }
+
+        try {
+            String data = store.read(openFileInput("data1.props"));
+
+            String[] props =  data.split("\\|");
+
+            txtEmailLogin.setText(props[0]);
+            txtPassword.setText(props[1]);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void navigateToCreateAccount() {
@@ -82,20 +112,29 @@ public class MainActivity extends ActionBarActivity {
                     return;
                 }
 
+                storeCreditials();
+
                 CurrentAccount.setAccount(success);
 
-                new GetAccountFamilyCommand()
-                    .get(success.getFamily(), new Callback<List<Account>>() {
+                CurrentAccount.setFamilyMembers(new GetAccountFamilyCommand()
+                    .get(success.getFamily()));
 
-                    @Override
-                    public void onResult(List<Account> result) {
-                            CurrentAccount.setFamilyMembers(result);
-                            navigateToHome();
-                    }
-                });
+                navigateToHome();
 
             }
         }.start();
+    }
+
+    private void storeCreditials() {
+        CreditialStore store = new CreditialStore(getApplicationContext());
+
+        String data = txtEmailLogin.getText() + "|" + txtPassword.getText();
+
+        try {
+            store.write(openFileOutput("data1.props", Context.MODE_PRIVATE), data);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void navigateToHome() {
