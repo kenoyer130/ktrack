@@ -7,5 +7,6 @@
     <string name="title_activity_oauth">OAuthActivity</string>
     <string name="title_activity_create_account">CreateAccountActivity</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_view_kid">ViewKidActivity</string>
 
 </resources>

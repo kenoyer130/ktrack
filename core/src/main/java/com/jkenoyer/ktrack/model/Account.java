@@ -77,4 +77,9 @@ public class Account implements Serializable {
     public void setFamilyEmail(String familyEmail) {
         this.familyEmail = familyEmail;
     }
+
+    @Override
+    public String toString() {
+        return name + " $" + amount;
+    }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -35,14 +36,28 @@ public class HomeActivity extends ActionBarActivity {
         setKidSelector();
     }
 
-    private void setKidSelector() {
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.activity_home, CurrentAccount.getKids());
-        lstKids.setAdapter(adapter);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ArrayAdapter adapter = (ArrayAdapter) lstKids.getAdapter();
+        adapter.notifyDataSetChanged();
     }
 
-    private void viewKid(Account kid) {
-        Intent intent = new Intent(this, CreateAccountActivity.class);
-        intent.putExtra("role", FamilyRole.Parent);
+    private void setKidSelector() {
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, CurrentAccount.getKids());
+        lstKids.setAdapter(adapter);
+
+        lstKids.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+                Account selectedAccount =(Account) (lstKids.getItemAtPosition(myItemInt));
+                navigateToKid(selectedAccount);
+            }
+        });
+    }
+
+    private void navigateToKid(Account kid) {
+        Intent intent = new Intent(this, ViewKidActivity.class);
+        intent.putExtra("kid", kid);
         startActivity(intent);
     }
 
