@@ -5,6 +5,11 @@ import com.jkenoyer.ktrack.commands.GetDemeritReasonsCommand;
 import com.jkenoyer.ktrack.commands.GetWithdrawelReasonsCommand;
 import com.jkenoyer.ktrack.commands.SaveTransactionCommand;
 import com.jkenoyer.ktrack.model.Account;
+
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,10 +59,14 @@ public class ViewKidActivity extends ActionBarActivity {
 
         kid = (Account) getIntent().getExtras().get("kid");
 
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 20, 0);
+
         btnCredit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setCreditView();
+                playSound(R.raw.ding);
             }
         });
 
@@ -65,6 +74,7 @@ public class ViewKidActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 setDemeritView();
+                playSound(R.raw.wrong);
             }
         });
 
@@ -83,6 +93,11 @@ public class ViewKidActivity extends ActionBarActivity {
         });
 
         initView();
+    }
+
+    private void playSound(int id) {
+        MediaPlayer mp = MediaPlayer.create(this, id);
+        mp.start();
     }
 
     private void save() {
